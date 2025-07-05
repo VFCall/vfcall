@@ -1,20 +1,17 @@
-
+import { supabase } from '../lib/supabaseClient'
 import { useState } from 'react'
 
 export default function Login() {
   const [email, setEmail] = useState('')
 
   const handleLogin = async () => {
-    const res = await fetch('https://turkejedgzqakpmwuwkj.supabase.co/auth/v1/magiclink', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'YOUR_PUBLIC_ANON_KEY',
-        'Authorization': 'Bearer YOUR_PUBLIC_ANON_KEY',
-      },
-      body: JSON.stringify({ email }),
-    })
-    alert('Link de login enviado para seu e-mail!')
+    const { error } = await supabase.auth.signInWithOtp({ email })
+
+    if (error) {
+      alert('Erro ao enviar link de login: ' + error.message)
+    } else {
+      alert('Link de login enviado para seu e-mail!')
+    }
   }
 
   return (
@@ -29,5 +26,6 @@ export default function Login() {
       />
       <button onClick={handleLogin} style={{ marginTop: 20, padding: '10px 20px', background: 'white', color: '#1B5E20', borderRadius: 8, border: 'none' }}>Entrar</button>
     </div>
-  );
+  )
 }
+
